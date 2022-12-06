@@ -1,20 +1,19 @@
-import { data } from 'autoprefixer';
-import React from 'react';
+import React, { useState } from 'react';
 import dice from './images/icon-dice.svg';
 import desktopLines from './images/pattern-divider-desktop.svg';
 import mobileLines from './images/pattern-divider-mobile.svg';
 
 const App = () => {
   const api = 'https://api.adviceslip.com/advice';
-  const advice = document.getElementById('advice');
-  const number = document.getElementById('number');
+  const [item, setItem] = useState({});
 
-  const getApi = () => {
+  const getApi = async () => {
     fetch(api)
-      .then((res) => res.json())
+      .then((res) => {
+        return res.json();
+      })
       .then((data) => {
-        advice.innerHTML = `${data.slip.advice}`;
-        number.innerHTML = `Advice #${data.slip.id}`;
+        setItem(data);
       });
   };
 
@@ -22,12 +21,20 @@ const App = () => {
     <>
       <div className="h-screen w-full bg-dark-blue flex justify-center">
         <div className="bg-dark-gray text-white mt-auto mb-auto ml-5 mr-5 text-center p-10 flex flex-col justify-center w-96 relative">
-          <h6 id="number" className="text-neon-green font-bold mb-5">
-            Advice #No
-          </h6>
-          <p id="advice" className="font-extra-bold mb-5">
-            Press the dice
-          </p>
+          {item.slip ? (
+            <h6 id="number" className="text-neon-green font-bold mb-5">
+              {`Advice #${item.slip.id}`}
+            </h6>
+          ) : (
+            <h6 className="text-neon-green font-bold mb-5">Advice #No</h6>
+          )}
+          {item.slip ? (
+            <p id="advice" className="font-extra-bold mb-5">
+              {item.slip.advice}
+            </p>
+          ) : (
+            <p className="font-extra-bold mb-5">Press the dice</p>
+          )}
           <img src={desktopLines} alt="" className="hidden md:flex mb-10" />
           <img src={mobileLines} alt="" className="md:hidden mb-10" />
           <button
